@@ -109,6 +109,7 @@ public class B_Add_Tree <K extends Comparable<K>, V>{
         gabbage = input.next();
         String end = input.next();
         B_Add_Node temp = tree.getRoot();
+        long beginT = System.nanoTime();
         System.out.println("There are the word between "+ begin + " and " + end );
         while (temp.children != null){
             temp = (B_Add_Node) temp.children.get(0);
@@ -121,19 +122,40 @@ public class B_Add_Tree <K extends Comparable<K>, V>{
             }catch (Exception e){
                 tempKey = new String[1];
                 tempKey[0] = "";
+                System.out.print("  ha ");
             }
 
-            if(i < temp.keys.size() && (tempKey[0].toLowerCase().compareTo(begin) >= 0) && tempKey[0].toLowerCase().compareTo(end) <= 0){
+            //这里就不区分大小写了，与B_Add_Node插入时候保持一致
+            if(i < temp.keys.size() && (tempKey[0].compareTo(begin) >= 0) && tempKey[0].compareTo(end) <= 0){
                 System.out.println(temp.keys.get(i).toString());
+                if(i == temp.keys.size()-1){
+                    i = -1;
+                    if(temp.getNext()!=null){
+                        temp = temp.getNext();
+                    }
+                }
             }
+//            if(i == order - 1){
+//                if(temp.getNext() != null) {
+//                    temp = temp.getNext();
+//                    i = -1;
+//                }
+//                else {
+//                    break;
+//                }
+//
+//            }
             else if(i >= temp.keys.size() || i == order - 1){
                 if(temp.getNext() != null) {
                     temp = temp.getNext();
+                    i = -1;
                 }
                 else{
+                    long endT = System.nanoTime();
+                    System.out.println("The range search use " + (endT - beginT) + " ns");
                     break;
                 }
-                i = -1;
+
             }
         }
 
@@ -240,8 +262,6 @@ public class B_Add_Tree <K extends Comparable<K>, V>{
             }
         }
     }
-
-
 
 
 

@@ -40,11 +40,9 @@ public class B_Add_Node <K extends Comparable<K>, V> {
 
 
 
-//    public V getKey(B_Add_Node b_add_node,int i){
-//        return b_add_node.keys.get(i).getKey();
-//    }
     //根据key获取value
     public V get(K key) {
+        long begin = System.nanoTime();
         //如果是叶子节点 
         if (isLeaf) {
             int low = 0, high = keys.size() - 1, mid;
@@ -85,6 +83,8 @@ public class B_Add_Node <K extends Comparable<K>, V> {
                     high = mid - 1;
                 }
             }
+            long end = System.nanoTime();
+            System.out.println("We use "+(end - begin) + "ns for search !");
             return children.get(low).get(key);
         }
     }
