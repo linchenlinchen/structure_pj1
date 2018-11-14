@@ -64,9 +64,14 @@ public class B_Add_Tree <K extends Comparable<K>, V>{
         System.out.println("Enter your order:");
         Scanner input = new Scanner(System.in);
         String orderStr = input.nextLine();
-        int order = 3;
+        long beginT = 0;
+        long endT = 0;
+        int order = 4;
         try {
             order = Integer.parseInt(orderStr);
+            if(order <= 2){
+                order = 4;
+            }
         }catch (Exception e){
             System.out.println("Error order! so we assume order = 3!");
         }
@@ -78,6 +83,7 @@ public class B_Add_Tree <K extends Comparable<K>, V>{
         System.out.println("Enter value you want to delete" +
                 "(input \"file_delete\" or \"word\"):");
         String del = input.nextLine();
+        beginT = System.nanoTime();
         if(del.equals("file_delete")){
             tree.deleteFile();
         }
@@ -87,10 +93,13 @@ public class B_Add_Tree <K extends Comparable<K>, V>{
         else {
             tree.delete(del);
         }
+        endT = System.nanoTime();
+        System.out.println("The delete operation use time : " + (endT - beginT) + " ns");
 
         System.out.println("Enter key you want to insert or update" +
                 "(input \"file_insert\" or \"key\"): ");
         String key = input.nextLine();
+        beginT = System.nanoTime();
         if(key.equals("file_insert")){
             tree.insertFile();
         }
@@ -99,6 +108,8 @@ public class B_Add_Tree <K extends Comparable<K>, V>{
             String value = input.nextLine();
             tree.insertOrUpdate(key, value);
         }
+        endT = System.nanoTime();
+        System.out.println("The insert operation use time : " + (endT - beginT) + " ns");
 
         System.out.println("Enter a key you want to query:");
         String search = input.nextLine();
@@ -109,8 +120,8 @@ public class B_Add_Tree <K extends Comparable<K>, V>{
         gabbage = input.next();
         String end = input.next();
         B_Add_Node temp = tree.getRoot();
-        long beginT = System.nanoTime();
         System.out.println("There are the word between "+ begin + " and " + end );
+        beginT = System.nanoTime();
         while (temp.children != null){
             temp = (B_Add_Node) temp.children.get(0);
         }
@@ -135,34 +146,25 @@ public class B_Add_Tree <K extends Comparable<K>, V>{
                     }
                 }
             }
-//            if(i == order - 1){
-//                if(temp.getNext() != null) {
-//                    temp = temp.getNext();
-//                    i = -1;
-//                }
-//                else {
-//                    break;
-//                }
-//
-//            }
             else if(i >= temp.keys.size() || i == order - 1){
                 if(temp.getNext() != null) {
                     temp = temp.getNext();
                     i = -1;
                 }
                 else{
-                    long endT = System.nanoTime();
+
                     System.out.println("The range search use " + (endT - beginT) + " ns");
                     break;
                 }
 
             }
         }
-
+        endT = System.nanoTime();
+        System.out.println("The search operation use time : " + (endT - beginT) +" ns");
     }
 
     //—————————————————————————————————————初始化的过程，读取文件
-    private void initiate(B_Add_Tree tree){
+    public void initiate(B_Add_Tree tree){
         File file = new File("/Users/L2595/IdeaProjects/Red_Black_Tree/src/com/company/1_initial.txt");
         try {
             InputStreamReader isr = new InputStreamReader(new FileInputStream(file),"GB18030");

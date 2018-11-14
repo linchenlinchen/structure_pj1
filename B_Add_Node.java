@@ -43,7 +43,7 @@ public class B_Add_Node <K extends Comparable<K>, V> {
     //根据key获取value
     public V get(K key) {
         long begin = System.nanoTime();
-        //如果是叶子节点 
+        //如果是叶子节点
         if (isLeaf) {
             int low = 0, high = keys.size() - 1, mid;
             int comp ;
@@ -58,17 +58,17 @@ public class B_Add_Node <K extends Comparable<K>, V> {
                     high = mid - 1;
                 }
             }
-            //未找到所要查询的对象 
+            //未找到所要查询的对象
             return null;
         }
-        //如果不是叶子节点 
-        //如果key小于节点最左边的key，沿第一个子节点继续搜索 
+        //如果不是叶子节点
+        //如果key小于节点最左边的key，沿第一个子节点继续搜索
         if (key.compareTo(keys.get(0).getKey()) < 0) {
             return children.get(0).get(key);
-            //如果key大于等于节点最右边的key，沿最后一个子节点继续搜索 
+            //如果key大于等于节点最右边的key，沿最后一个子节点继续搜索
         }else if (key.compareTo(keys.get(keys.size()-1).getKey()) >= 0) {
             return children.get(children.size()-1).get(key);
-            //否则沿比key大的前一个子节点继续搜索 
+            //否则沿比key大的前一个子节点继续搜索
         }else {
             int low = 0, high = keys.size() - 1, mid= 0;
             int comp ;
@@ -89,8 +89,9 @@ public class B_Add_Node <K extends Comparable<K>, V> {
         }
     }
 
+    //插入或者更新
     public void insertOrUpdate(K key, V value, B_Add_Tree<K,V> tree){
-        //如果是叶子节点 
+        //如果是叶子节点
         if (isLeaf){
             //还未达到上限，不需要分裂，直接插入或更新
             if (contains(key) != -1 || keys.size() < tree.getOrder()){
@@ -125,10 +126,10 @@ public class B_Add_Node <K extends Comparable<K>, V> {
             previous = null;
             next = null;
 
-            //复制原节点关键字到分裂出来的新节点 
+            //复制原节点关键字到分裂出来的新节点
             copy2Nodes(key, value, left, right, tree);
 
-            //如果不是根节点 
+            //如果不是根节点
             if (parent != null) {
                 //调整父子节点关系 ，删除旧的叶子节点，将新的左右节点与父亲建立联系
                 int index = parent.children.indexOf(this);
@@ -142,10 +143,10 @@ public class B_Add_Node <K extends Comparable<K>, V> {
                 keys = null; //删除当前节点的关键字信息
                 children = null; //删除当前节点的孩子节点引用
 
-                //父节点插入或更新关键字 
+                //父节点插入或更新关键字
                 parent.updateInsert(tree);
                 parent = null; //删除当前节点的父节点引用
-                //如果是根节点     
+                //如果是根节点
             }
             else {
                 isRoot = false;
@@ -163,13 +164,13 @@ public class B_Add_Node <K extends Comparable<K>, V> {
 
         }
         //如果不是叶子节点
-        //如果key小于等于节点最左边的key，沿第一个子节点继续搜索 
+        //如果key小于等于节点最左边的key，沿第一个子节点继续搜索
         if (key.compareTo(keys.get(0).getKey()) < 0) {
             children.get(0).insertOrUpdate(key, value, tree);
-            //如果key大于节点最右边的key，沿最后一个子节点继续搜索 
+            //如果key大于节点最右边的key，沿最后一个子节点继续搜索
         }else if (key.compareTo(keys.get(keys.size()-1).getKey()) >= 0) {
             children.get(children.size()-1).insertOrUpdate(key, value, tree);
-            //否则沿比key大的前一个子节点继续搜索 
+            //否则沿比key大的前一个子节点继续搜索
         }else {
             int low = 0, high = keys.size() - 1, mid= 0;
             int comp ;
@@ -226,7 +227,7 @@ public class B_Add_Node <K extends Comparable<K>, V> {
         }
     }
 
-    /** 插入到当前节点的关键字中*/
+    //插入到当前节点的关键字中
     private void insertOrUpdate(K key, V value){
         //利用二分法
         int low = 0, high = keys.size() - 1, mid;
@@ -250,7 +251,7 @@ public class B_Add_Node <K extends Comparable<K>, V> {
         }
     }
 
-    /** 插入节点后中间节点的更新 */
+    //插入节点后中间节点的更新
     private void updateInsert(B_Add_Tree<K, V> tree){
 
         //如果子节点数超出阶数，则需要分裂该节点
@@ -311,15 +312,15 @@ public class B_Add_Node <K extends Comparable<K>, V> {
     }
 
 
-    /** 删除节点后中间节点的更新*/
+    //删除节点后中间节点的更新
     private void updateRemove(B_Add_Tree<K, V> tree) {
 
-        // 如果子节点数小于M / 2或者小于2，则需要合并节点 
+        // 如果子节点数小于M / 2或者小于2，则需要合并节点
         if (children.size() < tree.getOrder() / 2 || children.size() < 2) {
             if (isRoot) {
-                // 如果是根节点并且子节点数大于等于2，OK 
+                // 如果是根节点并且子节点数大于等于2，OK
                 if (children.size() >= 2) return;
-                // 否则与子节点合并 
+                // 否则与子节点合并
                 B_Add_Node<K, V> root = children.get(0);
                 tree.setRoot(root);
                 tree.setHeight(tree.getHeight() - 1);
@@ -329,7 +330,7 @@ public class B_Add_Node <K extends Comparable<K>, V> {
                 children = null;
                 return ;
             }
-            //计算前后节点  
+            //计算前后节点
             int currIdx = parent.children.indexOf(this);
             int prevIdx = currIdx - 1;
             int nextIdx = currIdx + 1;
@@ -341,11 +342,11 @@ public class B_Add_Node <K extends Comparable<K>, V> {
                 next = parent.children.get(nextIdx);
             }
 
-            // 如果前节点子节点数大于M / 2并且大于2，则从其处借补 
+            // 如果前节点子节点数大于M / 2并且大于2，则从其处借补
             if (previous != null
                     && previous.children.size() > tree.getOrder() / 2
                     && previous.children.size() > 2) {
-                //前叶子节点末尾节点添加到首位 
+                //前叶子节点末尾节点添加到首位
                 int idx = previous.children.size() - 1;
                 B_Add_Node<K, V> borrow = previous.children.get(idx);
                 previous.children.remove(idx);
@@ -362,7 +363,7 @@ public class B_Add_Node <K extends Comparable<K>, V> {
             if (next != null
                     && next.children.size() > tree.getOrder() / 2
                     && next.children.size() > 2) {
-                //后叶子节点首位添加到末尾 
+                //后叶子节点首位添加到末尾
                 B_Add_Node<K, V> borrow = next.children.get(0);
                 next.children.remove(0);
                 borrow.parent = this;
@@ -373,7 +374,7 @@ public class B_Add_Node <K extends Comparable<K>, V> {
                 return ;
             }
 
-            // 同前面节点合并 
+            // 同前面节点合并
             if (previous != null
                     && (previous.children.size() <= tree.getOrder() / 2
                     || previous.children.size() <= 2)) {
@@ -407,7 +408,7 @@ public class B_Add_Node <K extends Comparable<K>, V> {
                 return ;
             }
 
-            // 同后面节点合并 
+            // 同后面节点合并
             if (next != null
                     && (next.children.size() <= tree.getOrder() / 2
                     || next.children.size() <= 2)) {
@@ -438,36 +439,36 @@ public class B_Add_Node <K extends Comparable<K>, V> {
     }
 
     public V remove(K key, B_Add_Tree<K,V> tree){
-        //如果是叶子节点 
+        //如果是叶子节点
         if (isLeaf){
-            //如果不包含该关键字，则直接返回 
+            //如果不包含该关键字，则直接返回
             if (contains(key) == -1){
                 return null;
             }
-            //如果既是叶子节点又是根节点，直接删除 
+            //如果既是叶子节点又是根节点，直接删除
             if (isRoot) {
                 if(keys.size() == 1){
                     tree.setHeight(0);
                 }
                 return remove(key);
             }
-            //如果关键字数大于M / 2，直接删除 
+            //如果关键字数大于M / 2，直接删除
             if (keys.size() > tree.getOrder() / 2 && keys.size() > 2) {
                 return remove(key);
             }
-            //如果自身关键字数小于M / 2，并且前节点关键字数大于M / 2，则从其处借补 
+            //如果自身关键字数小于M / 2，并且前节点关键字数大于M / 2，则从其处借补
             if (previous != null &&
                     previous.parent == parent
                     && previous.keys.size() > tree.getOrder() / 2
                     && previous.keys.size() > 2 ) {
-                //添加到首位 
+                //添加到首位
                 int size = previous.keys.size();
                 keys.add(0, previous.keys.remove(size - 1));
                 int index = parent.children.indexOf(previous);
                 parent.keys.set(index, keys.get(0));
                 return remove(key);
             }
-            //如果自身关键字数小于M / 2，并且后节点关键字数大于M / 2，则从其处借补 
+            //如果自身关键字数小于M / 2，并且后节点关键字数大于M / 2，则从其处借补
             if (next != null
                     && next.parent == parent
                     && next.keys.size() > tree.getOrder() / 2
@@ -478,7 +479,7 @@ public class B_Add_Node <K extends Comparable<K>, V> {
                 return remove(key);
             }
 
-            //同前面节点合并 
+            //同前面节点合并
             if (previous != null
                     && previous.parent == parent
                     && (previous.keys.size() <= tree.getOrder() / 2
@@ -492,7 +493,7 @@ public class B_Add_Node <K extends Comparable<K>, V> {
                 parent.children.remove(previous);
                 previous.parent = null;
                 previous.keys = null;
-                //更新链表 
+                //更新链表
                 if (previous.previous != null) {
                     B_Add_Node<K, V> temp = previous;
                     temp.previous.next = this;
@@ -520,13 +521,13 @@ public class B_Add_Node <K extends Comparable<K>, V> {
                     || next.keys.size() <= 2)) {
                 V returnValue = remove(key);
                 for (int i = 0; i < next.keys.size(); i++) {
-                    //从首位开始添加到末尾 
+                    //从首位开始添加到末尾
                     keys.add(next.keys.get(i));
                 }
                 next.parent = null;
                 next.keys = null;
                 parent.children.remove(next);
-                //更新链表 
+                //更新链表
                 if (next.next != null) {
                     B_Add_Node<K, V> temp = next;
                     temp.next.previous = this;
@@ -550,13 +551,13 @@ public class B_Add_Node <K extends Comparable<K>, V> {
         }
         /*如果不是叶子节点*/
 
-        //如果key小于等于节点最左边的key，沿第一个子节点继续搜索 
+        //如果key小于等于节点最左边的key，沿第一个子节点继续搜索
         if (key.compareTo(keys.get(0).getKey()) < 0) {
             return children.get(0).remove(key, tree);
-            //如果key大于节点最右边的key，沿最后一个子节点继续搜索 
+            //如果key大于节点最右边的key，沿最后一个子节点继续搜索
         }else if (key.compareTo(keys.get(keys.size()-1).getKey()) >= 0) {
             return children.get(children.size()-1).remove(key, tree);
-            //否则沿比key大的前一个子节点继续搜索 
+            //否则沿比key大的前一个子节点继续搜索
         }else {
             int low = 0, high = keys.size() - 1, mid= 0;
             int comp ;
@@ -575,7 +576,7 @@ public class B_Add_Node <K extends Comparable<K>, V> {
         }
     }
 
-    /** 判断当前节点是否包含该关键字*/
+    //判断当前节点是否包含该关键字
     private int contains(K key) {
         int low = 0, high = keys.size() - 1, mid;
         int comp ;
@@ -593,7 +594,7 @@ public class B_Add_Node <K extends Comparable<K>, V> {
         return -1;
     }
 
-    /** 删除节点*/
+    //删除节点
     private V remove(K key){
         int low = 0,high = keys.size() -1,mid;
         int comp;
@@ -630,6 +631,7 @@ public class B_Add_Node <K extends Comparable<K>, V> {
 
     }
 
+    //获取叶子节点的next
     public B_Add_Node getNext(){
         return next;
     }
